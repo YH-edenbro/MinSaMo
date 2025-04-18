@@ -58,16 +58,16 @@
 
   <hr>
 
-  <div>
+  <div class="d-flex">
     <h2>Thread</h2>
-    <a href="{% url "books:thread_create" book.pk %}">쓰레드 작성</a>
-  
-    {% for thread in threads %}
-    {% comment %} {% url "books:thread_detail" book.pk thread.pk %} {% endcomment %}
-      <a href="">{{ thread.title }}</a>
-    {% endfor %}
+    <a href="{% url "books:thread_create" book.pk %}" class="ms-auto">쓰레드 작성</a>
   </div>
-
+  {% for thread in threads %}
+    <div class="d-flex">
+      <a href="{% url "books:thread_detail" book.pk thread.pk %}">{{ thread.title }}</a>
+      <p class="ms-auto">{{ thread.like_users.all|length }} ♥</p>
+    </div>
+  {% endfor %}
   <hr>
 
   <div>

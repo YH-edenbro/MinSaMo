@@ -18,7 +18,9 @@ class ThreadForm(forms.ModelForm):
         model = Thread
         exclude = [
             "user",
-            "book"
+            "book",
+            "like_users",
+            "cover_img",
             "created_at",
             "updated_at",
         ]
