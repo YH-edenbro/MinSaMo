@@ -13,4 +13,4 @@ urlpatterns = [
     path("<int:user_pk>/password/", views.change_password, name='change_password')
 ]
 
-#w주석석
+#w주석2
