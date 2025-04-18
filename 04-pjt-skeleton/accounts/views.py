@@ -63,8 +63,7 @@ def change_password(request, user_pk):
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
-            user = form.save()
-            update_session_auth_hash(request, user)
+            form.save()
             return redirect('books:index')
     else:
         form = PasswordChangeForm(request.user)
