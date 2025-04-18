@@ -12,3 +12,5 @@ urlpatterns = [
     path("update/", views.update, name='update'),
     path("<int:user_pk>/password/", views.change_password, name='change_password')
 ]
+
+#w주석석
