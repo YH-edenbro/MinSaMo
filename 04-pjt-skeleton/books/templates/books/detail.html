@@ -59,6 +59,18 @@
   <hr>
 
   <div>
+    <h2>Thread</h2>
+    <a href="{% url "books:thread_create" book.pk %}">쓰레드 작성</a>
+  
+    {% for thread in threads %}
+    {% comment %} {% url "books:thread_detail" book.pk thread.pk %} {% endcomment %}
+      <a href="">{{ thread.title }}</a>
+    {% endfor %}
+  </div>
+
+  <hr>
+
+  <div>
     <a href="{% url 'books:index' %}" class="btn btn-primary">BACK</a>
   </div>
 {% endblock content %}
