@@ -4,7 +4,7 @@
   <h3>{{ person.username }}님의 프로필</h3>
   <hr>
   {% if person.profile_image %}
-    <img src="{{ person.profile.url }}" alt="profile_img">
+    <img src="{{ person.profile_image.url }}" alt="profile_img">
   {% endif %}
   <p>아이디: {{ person.username }}</p>
   <p>이메일: {{ person.email }}</p>
