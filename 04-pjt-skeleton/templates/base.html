@@ -33,6 +33,7 @@
 </head>
 
 <body>
+  {% if request.user.is_authenticated %}
   <nav class="navbar bg-success navbar-expand-lg border-bottom border-body mb-4" data-bs-theme="dark">
     <div class="container-fluid">
       <a class="navbar-brand" href="{% url 'books:index' %}">ThRead</a>
@@ -47,11 +48,40 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'books:create' %}">CREATE</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">MY PROFILE</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'accounts:logout' %}">LOGOUT</a>
+          </li>
         </ul>
       </div>
     </div>
   </nav>
-  
+  {% else %}
+  <nav class="navbar bg-success navbar-expand-lg border-bottom border-body mb-4" data-bs-theme="dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{% url 'books:index' %}">ThRead</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto text-end mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="{% url 'books:index' %}">INDEX</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'accounts:login' %}">LOGIN</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'accounts:signup' %}">SIGNUP</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  {% endif %}
+
   <div class="container">
     {% block content %}
     {% endblock content %}

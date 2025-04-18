@@ -7,7 +7,7 @@ from .utils import (
     generate_audio_script,
     create_tts_audio,
 )
-
+from django.contrib.auth.decorators import login_required
 
 def index(request):
     books = Book.objects.all()
@@ -16,7 +16,7 @@ def index(request):
     }
     return render(request, "books/index.html", context)
 
-
+@login_required
 def create(request):
     if request.method == "POST":
         form = BookForm(request.POST, request.FILES)
@@ -53,7 +53,7 @@ def detail(request, pk):
     }
     return render(request, "books/detail.html", context)
 
-
+@login_required
 def update(request, pk):
     book = Book.objects.get(pk=pk)
     if request.method == "POST":
@@ -69,7 +69,7 @@ def update(request, pk):
     }
     return render(request, "books/update.html", context)
 
-
+@login_required
 def delete(request, pk):
     book = Book.objects.get(pk=pk)
     book.delete()
