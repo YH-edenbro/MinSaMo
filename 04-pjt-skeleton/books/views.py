@@ -22,6 +22,7 @@ def create(request):
         form = BookForm(request.POST, request.FILES)
         if form.is_valid():
             book = form.save(commit=False)
+            book.user = request.user
 
             wiki_summary = process_wikipedia_info(book)
 
@@ -84,6 +85,8 @@ def delete(request, pk):
 # @login_required
 def thread_create(request, pk):
     book = Book.objects.get(pk=pk)
+    if request.method == 'GET':
+        
     if request.method == 'POST':
         thread_form = ThreadForm(request.POST)
         if thread_form.is_valid():
