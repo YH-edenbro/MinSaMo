@@ -22,12 +22,14 @@ def create(request):
         form = BookForm(request.POST, request.FILES)
         if form.is_valid():
             book = form.save(commit=False)
+            book.user = request.user
 
             wiki_summary = process_wikipedia_info(book)
 
             author_info, author_works = generate_author_gpt_info(
                 book, wiki_summary
             )
+
             book.author_info = author_info
             book.author_works = author_works
             book.save()
