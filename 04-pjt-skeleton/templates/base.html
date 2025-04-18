@@ -48,9 +48,9 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'books:create' %}">CREATE</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">MY PROFILE</a>
-          </li>
+          {% comment %} <li class="nav-item">
+            <a class="nav-link" href="{% url "accounts:profile" user.username %}">MY PROFILE</a>
+          </li> {% endcomment %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'accounts:logout' %}">LOGOUT</a>
           </li>

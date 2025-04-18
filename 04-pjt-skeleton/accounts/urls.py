@@ -11,5 +11,5 @@ urlpatterns = [
     path("delete/", views.delete, name='delete'),
     path("update/", views.update, name='update'),
     path("<int:user_pk>/password/", views.change_password, name='change_password')
-    path("profile/<username>/", views.profile, name='profile'),
+    # path("profile/<username>/", views.profile, name='profile'),
 ]

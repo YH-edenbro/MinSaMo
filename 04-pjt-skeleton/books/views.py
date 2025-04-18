@@ -87,6 +87,7 @@ def delete(request, pk):
 def thread_create(request, pk):
     book = Book.objects.get(pk=pk)
     if request.method == 'GET':
+        pass
         
     if request.method == 'POST':
         thread_form = ThreadForm(request.POST)
