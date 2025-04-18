@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods, require_POST
 from .models import Book, Thread
 from .forms import BookForm, ThreadForm
 from .utils import (
@@ -7,7 +9,6 @@ from .utils import (
     generate_audio_script,
     create_tts_audio,
 )
-from django.contrib.auth.decorators import login_required
 
 def index(request):
     books = Book.objects.all()
@@ -17,6 +18,7 @@ def index(request):
     return render(request, "books/index.html", context)
 
 @login_required
+@require_http_methods(['GET', 'POST'])
 def create(request):
     if request.method == "POST":
         form = BookForm(request.POST, request.FILES)
@@ -60,7 +62,9 @@ def detail(request, pk):
     }
     return render(request, "books/detail.html", context)
 
+
 @login_required
+@require_http_methods(['GET', 'POST'])
 def update(request, pk):
     book = Book.objects.get(pk=pk)
     if request.method == "POST":
@@ -76,7 +80,9 @@ def update(request, pk):
     }
     return render(request, "books/update.html", context)
 
+
 @login_required
+@require_POST
 def delete(request, pk):
     book = Book.objects.get(pk=pk)
     book.delete()
@@ -84,6 +90,7 @@ def delete(request, pk):
 
 
 @login_required
+@require_http_methods(['GET', 'POST'])
 def thread_create(request, pk):
     book = Book.objects.get(pk=pk)
     if request.method == 'POST':
@@ -114,25 +121,31 @@ def thread_detail(request, pk, thread_pk):
 
 
 @login_required
+@require_http_methods(['GET', 'POST'])
 def thread_update(request, pk, thread_pk):
     book = Book.objects.get(pk=pk)
     thread = Thread.objects.get(pk=thread_pk)
-    if request.method == 'POST':
-        thread_form = ThreadForm(request.POST, request.FILES, instance=thread)
-        if thread_form.is_valid():
-            thread_form.save()
-            return redirect('books:thread_detail', pk, thread_pk)
+    if request.user == thread.user:
+        if request.method == 'POST':
+            thread_form = ThreadForm(request.POST, request.FILES, instance=thread)
+            if thread_form.is_valid():
+                thread_form.save()
+                return redirect('books:thread_detail', pk, thread_pk)
+        else:
+            thread_form = ThreadForm(instance=thread)
+        context = {
+            "book" : book,
+            "thread" : thread,
+            "thread_form" : thread_form,
+        }
+        return render(request, 'books/thread_update.html', context)
     else:
-        thread_form = ThreadForm(instance=thread)
-    context = {
-        "book" : book,
-        "thread" : thread,
-        "thread_form" : thread_form,
-    }
-    return render(request, 'books/thread_update.html', context)
+        return redirect('books:thread_detail', pk, thread_pk)
+
 
 
 @login_required
+@require_POST
 def thread_delete(request, pk, thread_pk):
     thread = Thread.objects.get(pk=thread_pk)
     if request.method == 'POST':
@@ -141,6 +154,7 @@ def thread_delete(request, pk, thread_pk):
 
 
 @login_required
+@require_POST
 def thread_likes(request, pk, thread_pk):
     thread = Thread.objects.get(pk=thread_pk)
     if request.user in thread.like_users.all():

@@ -24,3 +24,12 @@ class ThreadForm(forms.ModelForm):
             "created_at",
             "updated_at",
         ]
+        widgets = {
+            "reading_date" : forms.DateInput(
+                format="%Y-%m-%d",
+                attrs = {
+                    "type" : "date",
+                    "autocomplete": "on"
+                }
+            )
+        }

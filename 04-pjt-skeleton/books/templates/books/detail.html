@@ -50,16 +50,18 @@
 
   <hr>
 
-  <a href="{% url 'books:update' book.pk %}" class="btn btn-secondary">UPDATE</a>
-  <form action="{% url 'books:delete' book.pk %}" method="POST" class="d-inline">
-    {% csrf_token %}
-    <input type="submit" value="DELETE" class="btn btn-danger">
-  </form>
+  {% if request.user == thread.user %}
+    <a href="{% url 'books:update' book.pk %}" class="btn btn-primary">UPDATE</a>
+    <form action="{% url 'books:delete' book.pk %}" method="POST" class="d-inline">
+      {% csrf_token %}
+      <input type="submit" value="DELETE" class="btn btn-danger">
+    </form>
 
-  <hr>
+    <hr>
+  {% endif %}
 
   <div class="d-flex">
-    <h2>Thread</h2>
+    <h2 class="mb-3">Thread</h2>
     <a href="{% url "books:thread_create" book.pk %}" class="ms-auto">쓰레드 작성</a>
   </div>
   {% for thread in threads %}
@@ -71,6 +73,6 @@
   <hr>
 
   <div>
-    <a href="{% url 'books:index' %}" class="btn btn-primary">BACK</a>
+    <a href="{% url 'books:index' %}" class="btn btn-secondary">BACK</a>
   </div>
 {% endblock content %}

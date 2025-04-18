@@ -5,8 +5,11 @@ from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods, require_POST
 from .forms import CustomUserChangForm, CustomUserCreationForm
+
 # Create your views here.
+@require_http_methods(['GET', 'POST'])
 def login(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, request.POST)
@@ -20,11 +23,14 @@ def login(request):
     }
     return render(request, 'accounts/login.html', context)
 
+
 @login_required
 def logout(request):
     auth_logout(request)
     return redirect('books:index')
 
+
+@require_http_methods(['GET', 'POST'])
 def signup(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST, request.FILES)
@@ -38,12 +44,15 @@ def signup(request):
     }
     return render(request, 'accounts/signup.html', context)
 
+
 @login_required
 def delete(request):
     request.user.delete()
     return redirect('books:index')
 
+
 @login_required
+@require_http_methods(['GET', 'POST'])
 def update(request):
     if request.method == 'POST':
         form = CustomUserChangForm(request.POST, request.FILES, instance=request.user)
@@ -59,6 +68,7 @@ def update(request):
 
 
 @login_required
+@require_http_methods(['GET', 'POST'])
 def change_password(request, user_pk):
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)
@@ -72,6 +82,7 @@ def change_password(request, user_pk):
     }
     return render(request, 'accounts/change_password.html', context)
 
+
 def profile(request, username):
     User = get_user_model()
     person = User.objects.get(username=username)
@@ -80,12 +91,14 @@ def profile(request, username):
     }
     return render(request, 'accounts/profile.html', context)
 
+
 @login_required
+@require_POST
 def follow(reqeust, user_pk):
     User = get_user_model()
     person = User.objects.get(pk=user_pk)
     if person != reqeust.user:
-        if reqeust.user in person.follower.all():
+        if reqeust.user in person.followers.all():
             person.followers.remove(reqeust.user)
         else:
             person.followers.add(reqeust.user)

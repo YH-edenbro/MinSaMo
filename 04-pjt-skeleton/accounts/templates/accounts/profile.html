@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h3>{{ person.username }}님의 프로필</h3>
+  <h3 class="fw-bold">{{ person.username }}님의 프로필</h3>
   <hr>
   {% if person.profile_image %}
-    <img src="{{ person.profile_image.url }}" alt="profile_img">
+    <img src="{{ person.profile_image.url }}" alt="profile_img" class="rounded-circle"  style="width: 8rem; height: 8rem;">
   {% endif %}
   <p>아이디: {{ person.username }}</p>
   <p>이메일: {{ person.email }}</p>
@@ -18,9 +18,9 @@
   <h5>팔로잉 : {{ person.followings.all|length }}</h5>
   <hr>
   {% if request.user == person %}
-    <p>회원정보 수정</p>
-    <form action="{% url "accounts:delete" %}" method="POST">
-      <input type="submit" value="회원탈퇴">
+    <a href="{% url "accounts:update" %}" class="btn btn-outline-primary">회원정보 수정</a>
+    <form action="{% url "accounts:delete" %}" method="POST" class="d-inline">
+      <input type="submit" value="회원탈퇴" class="btn btn-outline-danger">
     </form>
   {% else %}
     <form action="{% url "accounts:follow" person.pk %}" method="POST">
@@ -33,12 +33,12 @@
     </form>
   {% endif %}
   <hr>
-  <h3>{{ person.username }}님의 쓰레드 목록</h3>
+  <h3 class="fw-bold">{{ person.username }}님의 쓰레드 목록</h3>
   <ul>
     {% for thread in person.thread_set.all %}
       <li>
-        <a href="{% url "books:thread_detail" thread.book.pk thread.pk %}"></a>
-        {{ thread.title }}
+        <a href="{% url "books:thread_detail" thread.book.pk thread.pk %}">{{ thread.title }}</a>
+        <p class="d-inline">- 좋아요 : {{ thread.like_users.all|length }}</p>
       </li>
     {% endfor %}
   </ul>

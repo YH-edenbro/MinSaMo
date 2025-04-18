@@ -9,8 +9,9 @@
 
     {% for field in form %}
       <div class="mb-3">
-        {{ field.label_tag }}
-        {{ field }}
+        <div>{{ field.label_tag }}</div>
+        <div>{{ field }}</div>
+        
         {% if field.help_text %}
           <div class="form-text text-muted">{{ field.help_text }}</div>
         {% endif %}
@@ -18,7 +19,7 @@
       </div>
     {% endfor %}
 
-    <button type="submit" class="btn btn-success w-100">저장</button>
+    <button type="submit" class="btn btn-success">저장</button>
   </form>
 </div>
 {% endblock content %}
