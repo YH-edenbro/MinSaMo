@@ -1,5 +1,45 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h3>{{ person.username }}님의 프로필</h3>
+  <h3>{{ person.username }}님의 프로필</h3>
+  <hr>
+  {% if person.profile_image %}
+    <img src="{{ person.profile.url }}" alt="profile_img">
+  {% endif %}
+  <p>아이디: {{ person.username }}</p>
+  <p>이메일: {{ person.email }}</p>
+  <p>이름: {{ person.last_name }}{{ person.first_name }}</p>
+  <p>성별: {{ person.gender }}</p>
+  <p>나이: {{ person.age }}</p>
+  <p>주간 평균 독서 시간: {{ person.weekly_reading_time }}시간</p>
+  <p>연간 독서량: {{ person.yearly_read_books }}권</p>
+  <hr>
+  <h5>팔로워 : {{ person.followers.all|length }}</h5>
+  <h5>팔로잉 : {{ person.followings.all|length }}</h5>
+  <hr>
+  {% if request.user == person %}
+    <p>회원정보 수정</p>
+    <form action="{% url "accounts:delete" %}" method="POST">
+      <input type="submit" value="회원탈퇴">
+    </form>
+  {% else %}
+    <form action="{% url "accounts:follow" person.pk %}" method="POST">
+      {% csrf_token %}
+      {% if request.user in person.followers.all %}
+        <input type="submit" value="언팔로우" class="btn btn-outline-danger">
+      {% else %}
+        <input type="submit" value="팔로우" class="btn btn-success">
+      {% endif %}
+    </form>
+  {% endif %}
+  <hr>
+  <h3>{{ person.username }}님의 쓰레드 목록</h3>
+  <ul>
+    {% for thread in person.thread_set.all %}
+      <li>
+        <a href="{% url "books:thread_detail" thread.book.pk thread.pk %}"></a>
+        {{ thread.title }}
+      </li>
+    {% endfor %}
+  </ul>
 {% endblock content %}

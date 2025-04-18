@@ -12,3 +12,4 @@ class User(AbstractUser):
     weekly_reading_time = models.FloatField(null=True, blank=True, help_text="주간 평균 독서 시간(시간)")
     yearly_read_books = models.PositiveIntegerField(null=True, blank=True, help_text="연간 독서량(권)")
     profile_image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
+    followings = models.ManyToManyField('self', symmetrical=False, related_name='followers')
