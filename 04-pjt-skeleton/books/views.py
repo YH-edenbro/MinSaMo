@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from .models import Book
-from .forms import BookForm
+from .models import Book, Thread
+from .forms import BookForm, ThreadForm
 from .utils import (
     process_wikipedia_info,
     generate_author_gpt_info,
@@ -48,8 +48,13 @@ def create(request):
 
 def detail(request, pk):
     book = Book.objects.get(pk=pk)
+    threads = Thread.objects.all()
+    thread_form = ThreadForm()
+
     context = {
         "book": book,
+        "threads" : threads,
+        "thread_form" : thread_form,
     }
     return render(request, "books/detail.html", context)
 
@@ -74,3 +79,20 @@ def delete(request, pk):
     book = Book.objects.get(pk=pk)
     book.delete()
     return redirect("books:index")
+
+
+# @login_required
+def thread_create(request, pk):
+    book = Book.objects.get(pk=pk)
+    if request.method == 'POST':
+        thread_form = ThreadForm(request.POST)
+        if thread_form.is_valid():
+            thread = thread_form.save(commmit=False)
+            thread.user = request.user
+            thread.book = book
+            thread.save()
+            return redirect('books:detail', pk)
+        context = {
+            "thread_form" : thread_form,
+        }
+        return render(request, 'books/detail.hmtl', context)
