@@ -83,20 +83,68 @@ def delete(request, pk):
     return redirect("books:index")
 
 
-# @login_required
+@login_required
 def thread_create(request, pk):
     book = Book.objects.get(pk=pk)
-    if request.method == 'GET':
-        
     if request.method == 'POST':
         thread_form = ThreadForm(request.POST)
         if thread_form.is_valid():
-            thread = thread_form.save(commmit=False)
+            thread = thread_form.save(commit=False)
             thread.user = request.user
             thread.book = book
             thread.save()
             return redirect('books:detail', pk)
-        context = {
-            "thread_form" : thread_form,
-        }
-        return render(request, 'books/detail.hmtl', context)
+    else:
+        thread_form = ThreadForm()
+    context = {
+        "book" : book,
+        "thread_form" : thread_form,
+    }
+    return render(request, 'books/thread_create.html', context)
+
+
+def thread_detail(request, pk, thread_pk):
+    book = Book.objects.get(pk=pk)
+    thread = Thread.objects.get(pk=thread_pk)
+    context = {
+        'book' : book,
+        'thread' : thread,
+    }
+    return render(request, 'books/thread_detail.html', context)
+
+
+@login_required
+def thread_update(request, pk, thread_pk):
+    book = Book.objects.get(pk=pk)
+    thread = Thread.objects.get(pk=thread_pk)
+    if request.method == 'POST':
+        thread_form = ThreadForm(request.POST, request.FILES, instance=thread)
+        if thread_form.is_valid():
+            thread_form.save()
+            return redirect('books:thread_detail', pk, thread_pk)
+    else:
+        thread_form = ThreadForm(instance=thread)
+    context = {
+        "book" : book,
+        "thread" : thread,
+        "thread_form" : thread_form,
+    }
+    return render(request, 'books/thread_update.html', context)
+
+
+@login_required
+def thread_delete(request, pk, thread_pk):
+    thread = Thread.objects.get(pk=thread_pk)
+    if request.method == 'POST':
+        thread.delete()
+    return redirect('books:detail', pk)
+
+
+@login_required
+def thread_likes(request, pk, thread_pk):
+    thread = Thread.objects.get(pk=thread_pk)
+    if request.user in thread.like_users.all():
+        thread.like_users.remove(request.user)
+    else:
+        thread.like_users.add(request.user)
+    return redirect('books:thread_detail', pk, thread_pk)

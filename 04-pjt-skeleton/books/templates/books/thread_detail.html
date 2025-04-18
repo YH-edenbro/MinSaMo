@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  {% if thread.cover_img %}
+    <img src="{{ thread.cover_img.url }}" alt="thread_cover_image">
+  {% endif %}
+  <h1>{{ thread.title }}</h1>
+  <p>
+    도서 : <a href="{% url "books:detail" book.pk %}">{{ book.title }}</a>
+    작성자 : <a href="#">{{ user.username }}</a>
+    독서일 : {{ thread.reading_date }}
+  </p>
+  <hr>
+  <div>
+    <p>{{ thread.content }}</p>
+    <p>♥ {{ thread.like_users.all|length }} 좋아요</p>
+    <form action="{% url "books:thread_likes" book.pk thread.pk %}" method="POST">
+      {% csrf_token %}
+      {% if request.user in thread.like_users.all %}
+        <input type="submit" value="좋아요 취소" class="btn btn-outline-success">
+      {% else %}
+        <input type="submit" value="좋아요" class="btn btn-success">
+      {% endif %}
+    </form>
+  </div>
+  <hr>
+
+
+
+  <a href="{% url 'books:thread_update' book.pk thread.pk %}" class="btn btn-secondary">UPDATE</a>
+  <form action="{% url 'books:thread_delete' book.pk thread.pk %}" method="POST" class="d-inline">
+    {% csrf_token %}
+    <input type="submit" value="DELETE" class="btn btn-danger">
+  </form>
+{% endblock content %}

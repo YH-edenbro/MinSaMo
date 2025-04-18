@@ -1,12 +1,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>쓰레드 작성</h1>
-  <form action="{% url "books:thread_create" book.pk %}" method="POST" enctype="multipart/form-data">
+  <h1>쓰레드 수정</h1>
+  <form action="{% url "books:thread_update" book.pk thread.pk %}" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {{ thread_form.as_p }}
     <input type="submit" value="전송" class="btn btn-outline-success">
   </form>
   <a href="{% url "books:detail" book.pk %}" class="btn btn-outline-danger mt-2">취소</a>
-
 {% endblock content %}
