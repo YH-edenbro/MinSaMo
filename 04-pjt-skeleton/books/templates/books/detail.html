@@ -50,7 +50,7 @@
 
   <hr>
 
-  {% if request.user == thread.user %}
+  {% if request.user == book.user %}
     <a href="{% url 'books:update' book.pk %}" class="btn btn-primary">UPDATE</a>
     <form action="{% url 'books:delete' book.pk %}" method="POST" class="d-inline">
       {% csrf_token %}

@@ -1,9 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  {% if thread.cover_img %}
-    <img src="{{ thread.cover_img.url }}" alt="thread_cover_image">
+  {% if thread.dalle_img %}
+    <img src="{{ thread.dalle_img.url }}" alt="AI_generated_cover" class="img-fluid mb-3">
+  {% elif thread.cover_img %}
+    <img src="{{ thread.cover_img.url }}" alt="thread_cover_image" class="img-fluid mb-3">
   {% endif %}
+
   <h1>{{ thread.title }}</h1>
   <p>
     도서 : <a href="{% url "books:detail" book.pk %}">{{ book.title }}</a>

@@ -8,6 +8,8 @@ from .utils import (
     generate_author_gpt_info,
     generate_audio_script,
     create_tts_audio,
+    generate_dalle_image_and_download,
+    extract_keywords_with_gpt,
 )
 
 def index(request):
@@ -100,6 +102,18 @@ def thread_create(request, pk):
             thread.user = request.user
             thread.book = book
             thread.save()
+
+            # DALL·E 이미지 생성
+            try:
+                keywords = extract_keywords_with_gpt(thread.title, thread.content)
+                image_file, image_name = generate_dalle_image_and_download(keywords)
+
+                if image_file:
+                    thread.dalle_img.save(image_name, image_file)
+                    thread.save()
+            except Exception as e:
+                print("DALL·E 이미지 생성 실패:", e)
+
             return redirect('books:detail', pk)
     else:
         thread_form = ThreadForm()

@@ -3,6 +3,7 @@ import requests
 import openai
 from pathlib import Path
 from django.conf import settings
+from django.core.files.base import ContentFile
 from gtts import gTTS
 import wikipediaapi
 from pydantic import BaseModel
@@ -71,6 +72,7 @@ def process_wikipedia_info(book):
         wiki_summary = "위키피디아에서 정보를 찾을 수 없습니다."
     return wiki_summary
 
+openai.api_key = settings.OPENAI_API_KEY
 
 def generate_author_gpt_info(book, wiki_summary):
     prompt = f"""
@@ -164,3 +166,35 @@ def create_tts_audio(book, audio_script):
     except Exception as e:
         print("gTTS 음성 파일 생성 에러:", e)
         return None
+
+
+def extract_keywords_with_gpt(title, content):
+    prompt = f"""
+    쓰레드 제목: {title}
+    독서 감상문: {content}
+
+    위 정보를 바탕으로 핵심 키워드 5개를 추출해줘.
+    """
+    response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[{"role": "user", "content": prompt}]
+    )
+    return response['choices'][0]['message']['content'].strip().split(',')[:5]
+
+def generate_dalle_image_and_download(keywords):
+    dalle_prompt = ", ".join(keywords) + "앞에 나열된 핵심 키워드를 바탕으로 몽환적이고 신비로운 일러스트레이션을 그려줘."
+    
+    response = openai.Image.create(
+        model="dall-e-3",
+        prompt=dalle_prompt,
+        size="1024x1024",
+        n=1
+    )
+
+    image_url = response["data"][0]["url"]
+    image_response = requests.get(image_url)
+
+    if image_response.status_code == 200:
+        return ContentFile(image_response.content), "dalle_cover.png"
+    else:
+        return None, None

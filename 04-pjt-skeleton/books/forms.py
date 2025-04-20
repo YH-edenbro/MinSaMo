@@ -23,6 +23,7 @@ class ThreadForm(forms.ModelForm):
             "cover_img",
             "created_at",
             "updated_at",
+            "dalle_img",
         ]
         widgets = {
             "reading_date" : forms.DateInput(
