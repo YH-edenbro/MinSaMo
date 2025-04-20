@@ -3,6 +3,7 @@
 {% block content %}
   {% if thread.dalle_img %}
     <img src="{{ thread.dalle_img.url }}" alt="AI_generated_cover" class="img-fluid mb-3">
+    {% comment %} 커버 이미지대신 dalle_img 추가 {% endcomment %}
   {% elif thread.cover_img %}
     <img src="{{ thread.cover_img.url }}" alt="thread_cover_image" class="img-fluid mb-3">
   {% endif %}
